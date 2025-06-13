@@ -1,19 +1,21 @@
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+import os
 
 @st.cache_data
-import os  # ✅ 이거 반드시 추가해줘야 함
-
 def load_data():
-    base_path = os.path.dirname(__file__)
-    file_path = os.path.join(base_path, 'netflix_titles.csv')
-
-    if not os.path.exists(file_path):
-        raise FileNotFoundError(f"파일 없음: {file_path}")
-
-    df = pd.read_csv(file_path)
+    # Streamlit에서는 현재 실행 경로 기준으로 상대경로 사용이 더 안전합니다.
+    csv_path = os.path.join("netflix_titles.csv")
+    
+    # 파일 존재 여부 확인
+    if not os.path.isfile(csv_path):
+        raise FileNotFoundError(f"'{csv_path}' 파일을 찾을 수 없습니다. Streamlit에 올렸는지 확인하세요.")
+    
+    df = pd.read_csv(csv_path)
+    df.dropna(subset=['title', 'type', 'release_year', 'rating'], inplace=True)
     return df
+
 
 
 def filter_data_by_genre_year(df, genre, year_range):
