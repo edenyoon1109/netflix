@@ -4,11 +4,15 @@ import streamlit as st
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv('data/netflix_titles.csv')
-    df['year'] = pd.to_datetime(df['release_date'], errors='coerce').dt.year
-    df['genres'] = df['listed_in'].str.split(', ')
-    df['rating'] = df['rating'].fillna('Unknown')
-    return df.dropna(subset=['year'])
+    # 현재 파일 기준 상대경로 설정
+    base_path = os.path.dirname(__file__)
+    file_path = os.path.join(base_path, 'netflix_titles.csv')  # 루트에 있는 파일
+
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"파일 없음: {file_path}")
+
+    df = pd.read_csv(file_path)
+    return df
 
 def filter_data_by_genre_year(df, genre, year_range):
     return df[
