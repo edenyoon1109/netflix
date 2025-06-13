@@ -3,16 +3,18 @@ import plotly.express as px
 import streamlit as st
 
 @st.cache_data
+import os  # ✅ 이거 반드시 추가해줘야 함
+
 def load_data():
-    # 현재 파일 기준 상대경로 설정
     base_path = os.path.dirname(__file__)
-    file_path = os.path.join(base_path, 'netflix_titles.csv')  # 루트에 있는 파일
+    file_path = os.path.join(base_path, 'netflix_titles.csv')
 
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"파일 없음: {file_path}")
 
     df = pd.read_csv(file_path)
     return df
+
 
 def filter_data_by_genre_year(df, genre, year_range):
     return df[
